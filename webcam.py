@@ -6,8 +6,8 @@ import time
 This project is:
 
 while a face is detected by camera, take a picture each frame and save the image 
-to the directory face_snapshots. when replay is pressed, feed images into gif-j 
-project, and display the snapshots as a gif.
+to the directory face_snapshots. when replay is pressed, feed images into make_gif.py 
+and display the snapshots as a gif.
 
 """
 
