@@ -1,74 +1,72 @@
 import tkinter as tk
 from PIL import Image, ImageTk
-from random import choice
 import os
 import itertools
 
 
-
+			
 root = tk.Tk()
-root.wm_attributes('-type', 'splash')
-size = [500, 500] 
+try:
+	root.wm_attributes('-type', 'splash')
+except:
+	pass
+
+size = [650, 480] 
 
 
 # Dynamically change window size with left/right click
 
 def leftclick(event): 
 	size[0]+=20
-	size[1]+=20
+	size[1]+=15
 
 def rightclick(event):
 	size[0]-=20
-	size[1]-=20	
+	size[1]-=15	
 
 
 # Browse directory containing images to stitch together
 gif_file = 'face_snapshots'
 file_list = os.listdir(gif_file)
- # Will be unordered unless sorted
 
 ###############################
 # feed file_list into mySort
+# python's .sort() method does not work properly here
 
 
 def quickSort(array):
 	# Sort integers
-	# base case
 	if len(array) < 2: # If the array has one element or is empty
 		return array
 	else:
 
-		pivot = array[0] # compare each element to pivot, recursive case
-		lower = [i for i in array[1:] if i <= pivot] # elements smaller than or equal to pivot
-		greater = [i for i in array[1:] if i > pivot] # elements larger than pivot
+		pivot = array[0] # compare each element to pivot
+		lower = [i for i in array[1:] if i <= pivot]
+		greater = [i for i in array[1:] if i > pivot]
 
 	return quickSort(lower) + [pivot] + quickSort(greater) 
 
 
-def mySort(array):
-	# strip and sort strings, feed into quickSort function
-	if len(array) < 2:
-		return array
-	else:
-		newArray = []
-		
-		for string in array:
-			newArray.append(string.strip('.png'))
-			pivot = array[0].strip('.png')
-			lower = [i for i in newArray[1:] if i <= pivot]
-			greater = [i for i in newArray[1:] if i > pivot]
-
-	return mySort(lower) + [pivot] + mySort(greater)
-
+def stripper(array):
+	newArray = []
+	for string in array:
+		newArray.append(string.strip('.png'))
+	return newArray
 
 myList1 = []
 myList2 = []
 myList3 = []
 
-for i in mySort(file_list):
+"""
+steps:
+1. strip .png
+2. convert to int, sort
+3. convert back to str, reattach .png suffix
+"""
+
+for i in stripper(file_list):
 	myList1.append(int(i))
 for i in quickSort(myList1):
-	# myList2.append(str(i)+'.png')
 	myList2.append(i)
 for i in myList2:
 	myList3.append(str(i)+'.png')
@@ -126,7 +124,8 @@ class Application(tk.Frame):
 
 		"""
 		self.next_img()
-		root.after(25, self.update)
+		# first arg is speed, lower number to increase speed
+		root.after(50, self.update)
 
 
 
@@ -137,7 +136,7 @@ class Application(tk.Frame):
 app = Application(master=root)
 app.bg.bind("<Button-1>", leftclick)
 app.bg.bind("<Button-3>", rightclick)
-root.x = 500
+root.x = 650
 root.y = 500
 # root.resizable(0,0) # Uncomment to make window not resizable
 app.mainloop()

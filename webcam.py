@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import time
+import os
 
 """
 This project is:
@@ -11,7 +12,11 @@ and display the snapshots as a gif.
 
 """
 
-cv2.namedWindow('main window') # the arg '16' removes native buttons on top of window. Buttons include zoom in/out, screen capture. Could be useful
+# Create snapshots directory if not already created
+# delete old snapshots inside directory if dir already exists
+os.system('file=face_snapshots\n[ -e $file ] && { echo "proper directory exists, starting. . ."; rm -r $file/*.png; } || { mkdir $file; echo "created directory: $file"; }')
+
+cv2.namedWindow('main window') # the second arg '16' removes native buttons on top of window. Buttons include zoom in/out, screen capture. Could be useful
 camera_feed = cv2.VideoCapture(0)
 
 
@@ -19,16 +24,16 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fronta
 
 
 
-if camera_feed.isOpened(): # try to get the first frame
-	rval, frame = camera_feed.read()
+if camera_feed.isOpened(): # grab first frame
+	cam, frame = camera_feed.read()
 else:
-	rval = False
+	cam = False
 
 
 # This counter increments the files up as they are saved
 n = 0
 
-while rval:
+while cam:
 
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -44,7 +49,7 @@ while rval:
 		# return True, or if ALL items in array return True, return True.
 		if img.any():
 			print('FACE DETECTED')
-			# This code will read the values from camera every 0.2 seconds
+			# This code will read the values from camera every frame
 			return_value, image = camera_feed.read()
 			# Save the read value from camera
 			cv2.imwrite(f'face_snapshots/{n}.png', image)
@@ -53,7 +58,7 @@ while rval:
 
 	cv2.imshow('main window', frame)
 
-	rval, frame = camera_feed.read()
+	cam, frame = camera_feed.read()
 	key = cv2.waitKey(20)
 	if key == 27: # exit on ESC
 		break
