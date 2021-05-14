@@ -14,7 +14,10 @@ and display the snapshots as a gif.
 
 # Create snapshots directory if not already created
 # delete old snapshots inside directory if dir already exists
-os.system('file=face_snapshots\n[ -e $file ] && { echo "proper directory exists, starting. . ."; rm -r $file/*.png; } || { mkdir $file; echo "created directory: $file"; }')
+try:
+	os.system('file=face_snapshots\n[ -e $file ] && { echo "proper directory exists, starting. . ."; rm -r $file/*.png; } || { mkdir $file; echo "created directory: $file"; }')
+except:
+	pass
 
 cv2.namedWindow('main window') # the second arg '16' removes native buttons on top of window. Buttons include zoom in/out, screen capture. Could be useful
 camera_feed = cv2.VideoCapture(0)
